@@ -85,6 +85,7 @@ class World{
         bool started;
 
         std::vector<Object*> system;
+        std::map<std::string, vector> val;
 
         GLFWwindow* window;
 
@@ -94,6 +95,8 @@ class World{
             Width = W;
             Length = L;
             name = s;
+
+            val = default_map();
 
             started = 1;
 
@@ -111,11 +114,6 @@ class World{
             *a = (*a/Width)*m;
             *b = (*b/Height)*m;
             *c = (*c/Length)*m;
-        }
-
-        void AddPoint(Object* p){
-
-            system.push_back(p);
         }
 
         void GridInit(){
@@ -155,7 +153,7 @@ class World{
             glEnd();
         }
 
-        void Update(){
+        void Run(){
 
             while (!glfwWindowShouldClose(window)){
 
@@ -168,16 +166,43 @@ class World{
             }
         }
 
+        void AddObject(Object* o){
+
+            system.push_back(o);
+        }
+
+        void AddDefaultVelocity(vector v){
+
+            val["velocity"] += v;
+
+            for(int i=0;i<system.size();i++){
+
+                system[i]->kinetics["velocity"] += v;
+            }
+        }
+
+        void AddDefaultAcceleration(vector a){
+
+            val["acceleration"] += a;
+
+            for(int i=0;i<system.size();i++){
+
+                system[i]->kinetics["acceleration"] += a;
+            }
+        }
+
+        void AddForce(vector f){
+
+            for(int i=0;i<system.size();i++){
+
+                system[i]->AddForce(f);
+            }
+        }
+
+
 };
 
-
 int main(){
-
-    World w = World();
-
-    w.init();
-
-    w.Update();
 
 	return 0;
 }

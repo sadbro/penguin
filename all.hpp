@@ -9,6 +9,7 @@
 #endif
 
 #include <cmath>
+#include <cstring>
 #include <iostream>
 #include <cassert>
 #include <cstdio>

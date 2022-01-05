@@ -19,4 +19,12 @@ void printMap(std::map<std::string, vector> m){
     }
 }
 
+std::map<std::string, vector> default_map(){
+
+    std::map<std::string, vector> k = { {"velocity", vector()},
+                                        {"acceleration", vector()} };
+
+    return k;
+}
+
 #endif
