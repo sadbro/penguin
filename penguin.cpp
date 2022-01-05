@@ -19,6 +19,11 @@ class Object {
         kinetics = d;
     }
 
+    void SetPos(vector v){
+
+        kinetics["position"] = v;
+    }
+
     void GetMass(double* m){
 
         *m = mass;
@@ -75,7 +80,7 @@ class World{
 
     public:
 
-        int Height, Width;
+        int Height, Width, Length;
         std::string name;
         bool started;
 
@@ -83,10 +88,11 @@ class World{
 
         GLFWwindow* window;
 
-        World(int W = 640, int H = 480, std::string s = "Penguin"){
+        World(int W = 640, int H = 480, int L = -1, std::string s = "Penguin"){
 
             Height = H;
             Width = W;
+            Length = L;
             name = s;
 
             started = 1;
@@ -100,9 +106,62 @@ class World{
             glfwMakeContextCurrent(window);
         }
 
+        void Normalize(double* a, double* b, double* c, int m = 1){
+
+            *a = (*a/Width)*m;
+            *b = (*b/Height)*m;
+            *c = (*c/Length)*m;
+        }
+
+        void AddPoint(Object* p){
+
+            system.push_back(p);
+        }
+
+        void GridInit(){
+
+            glPointSize(1);
+
+            glClear(GL_COLOR_BUFFER_BIT);
+            glBegin(GL_LINES);
+
+            glVertex3f(-1, 0, 0);
+            glVertex3f(1, 0, 0);
+
+            glVertex3f(0, -1, 0);
+            glVertex3f(0, 1, 0);
+
+            glEnd();
+        }
+
+        void Render(){
+
+            glPointSize(7);
+
+            glBegin(GL_POINTS);
+
+            for(int i=0;i<system.size();i++){
+
+                double t1, t2, t3;
+
+                system[i]->kinetics["position"].getXYZ(&t1, &t2, &t3);
+                Normalize(&t1, &t2, &t3, 2);
+
+                glVertex3f(t1, t2, t3);
+
+                system[i]->UpdateK(0.05);
+            }
+
+            glEnd();
+        }
+
         void Update(){
 
             while (!glfwWindowShouldClose(window)){
+
+                GridInit();
+
+                Render();
 
                 glfwSwapBuffers(window);
                 glfwPollEvents();
@@ -115,6 +174,7 @@ class World{
 int main(){
 
     World w = World();
+
     w.init();
 
     w.Update();
