@@ -43,7 +43,7 @@ class vector : public point {
             *this = (*this) - v1;
         }
 
-        vector operator * (double const k){
+        vector operator * (double k){
 
             return vector(  x*k,
                             y*k,
@@ -51,7 +51,7 @@ class vector : public point {
                         );
         }
 
-        void operator *= (double const k){
+        void operator *= (double k){
 
             *this = (*this) * k;
         }
@@ -72,6 +72,11 @@ class vector : public point {
         void operator /= (double const k){
 
             *this = (*this) / k;
+        }
+
+        bool isPositive(){
+
+            return (x > 0 && y > 0 && z > 0);
         }
 
         int dot(vector const& v1){
