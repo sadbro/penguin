@@ -80,14 +80,27 @@ class Object {
             }
         }
 
-        void Gravity(Object* o, double G = 10){
+        void Gravity(Object* o, double G = 1){
 
             double r = kinetics["position"].getDistance(o->kinetics["position"]);
-            double F = (G*mass*o->mass)/pow(r, 2);
+            double F = (G*mass*o->mass)/pow(r, 3);
             vector dir = o->kinetics["position"] - kinetics["position"];
 
-            AddForce(dir*F);
-            o->AddForce(dir*-F);
+            kinetics["acceleration"] = (dir*F)/mass;
+            o->kinetics["acceleration"] = (dir*-F)/o->mass;
+
+            std::cout << "Mass 1 : " << mass << std::endl;
+            std::cout << "Velocity     = ";
+            kinetics["velocity"].print();
+
+            std::cout << "Mass 2 : " << o->mass << std::endl;
+            std::cout << "Velocity     = ";
+            o->kinetics["velocity"].print();
+
+            printf("\nSEPARATION : %lf\n", r);
+
+            //std::cout << "Acceleration = ";
+            //o->kinetics["acceleration"].print();
         }
 
 };
@@ -187,11 +200,6 @@ class World{
 
                 if (t1 >= WL && t2 >= HL && t3 >= LL){
 
-                    for(int j=i+1;j<system.size();j++){
-
-                        system[i]->Gravity(system[j]);
-                    }
-
                     system[i]->UpdateK(step);
                     system[i]->Resist(r);
                 }
@@ -207,6 +215,14 @@ class World{
                 glClear(GL_COLOR_BUFFER_BIT);
 
                 GridInit();
+
+                for(int i=0;i<system.size();i++){
+
+                    for(int j=i+1;j<system.size();j++){
+
+                        system[i]->Gravity(system[j]);
+                    }
+                }
 
                 Render(step, resistance);
 
@@ -253,13 +269,13 @@ class World{
 
 int main(){
 
-    Object sun = Object(10);
     Object earth = Object(1);
+    Object sun = Object(100);
 
     sun.SetPos(vector(0, 0, 0));
-    earth.SetPos(vector(-100, 0, 0));
+    earth.SetPos(vector(-200, 0, 0));
 
-    earth.UpdateVelocity(vector(0, 1, 0));
+    earth.UpdateVelocity(vector(0, 0.5, 0));
 
     World w = World(640, 480, -1, "Penguin");
 
@@ -268,7 +284,7 @@ int main(){
     w.AddObject(&sun);
     w.AddObject(&earth);
 
-    w.Run(0.05, 1);
+    w.Run(0.5, 1);
 
 	return 0;
 }
