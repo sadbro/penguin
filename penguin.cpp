@@ -10,18 +10,34 @@ class Object {
     public:
 
         double mass;
+        int size;
+        vector color;
         std::map<std::string, vector> kinetics;
 
         Object( double m = 0,
+                vector c = vector(1, 1, 1),
+                int s = 10,
                 std::map<std::string, vector> d = default_kinetics() ){
 
             mass = m;
+            size = s;
+            color = c;
             kinetics = d;
         }
 
         void SetPos(vector v){
 
             kinetics["position"] = v;
+        }
+
+        void SetSize(int s){
+
+            size = s;
+        }
+
+        void SetColor(vector c){
+
+            color = c;
         }
 
         void GetMass(double* m){
@@ -89,15 +105,17 @@ class Object {
             kinetics["acceleration"] = (dir*F)/mass;
             o->kinetics["acceleration"] = (dir*-F)/o->mass;
 
-            std::cout << "Mass 1 : " << mass << std::endl;
-            std::cout << "Velocity     = ";
-            kinetics["velocity"].print();
-
-            std::cout << "Mass 2 : " << o->mass << std::endl;
-            std::cout << "Velocity     = ";
-            o->kinetics["velocity"].print();
+            //  DEBUG
 
             printf("\nSEPARATION : %lf\n", r);
+
+            std::cout << "Mass 1   = " << mass << std::endl;
+            std::cout << "Velocity = ";
+            kinetics["velocity"].print();
+
+            std::cout << "Mass 2   = " << o->mass << std::endl;
+            std::cout << "Velocity = ";
+            o->kinetics["velocity"].print();
 
             //std::cout << "Acceleration = ";
             //o->kinetics["acceleration"].print();
@@ -174,6 +192,7 @@ class World{
             glPointSize(1);
 
             glBegin(GL_LINES);
+            glColor3f(1, 1, 1);
 
             glVertex3f(-1, 0, 0);
             glVertex3f(1, 0, 0);
@@ -186,16 +205,19 @@ class World{
 
         void Render(double step , double r){
 
-            glPointSize(10);
-
-            glBegin(GL_POINTS);
-
             for(int i=0;i<system.size();i++){
 
                 double t1, t2, t3;
+                double c1, c2, c3;
+
+                glPointSize(system[i]->size);
+                glBegin(GL_POINTS);
 
                 system[i]->kinetics["position"].getXYZ(&t1, &t2, &t3);
+                system[i]->color.getXYZ(&c1, &c2, &c3);
+
                 Normalize(&t1, &t2, &t3);
+                glColor3f(c1, c2, c3);
                 glVertex3f(t1, t2, t3);
 
                 if (t1 >= WL && t2 >= HL && t3 >= LL){
@@ -203,9 +225,9 @@ class World{
                     system[i]->UpdateK(step);
                     system[i]->Resist(r);
                 }
-            }
 
-            glEnd();
+                glEnd();
+            }
         }
 
         void Run(double step, double resistance = 0){
@@ -272,8 +294,14 @@ int main(){
     Object earth = Object(1);
     Object sun = Object(100);
 
+    sun.SetSize(20);
+    earth.SetSize(5);
+
     sun.SetPos(vector(0, 0, 0));
-    earth.SetPos(vector(-200, 0, 0));
+    earth.SetPos(vector(-150, 0, 0));
+
+    sun.SetColor(vector(1, 0.9, 0.2));
+    earth.SetColor(vector(0.1, 0.9, 1));
 
     earth.UpdateVelocity(vector(0, 0.5, 0));
 
