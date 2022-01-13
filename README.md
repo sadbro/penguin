@@ -1,3 +1,4 @@
 # penguin
 Physiks Engine
-He He He
+
+> Compile and Run tests/test-1.cpp and have fun !!
