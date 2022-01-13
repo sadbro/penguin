@@ -1,5 +1,5 @@
 
-#include "../all.hpp"
+#include "../core.hpp"
 
 #ifndef __GRAPH_H
 #define __GRAPH_H
