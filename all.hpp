@@ -22,5 +22,6 @@
 #include "obj/vector.hpp"
 
 #include "utils/util.hpp"
+#include "utils/graph.hpp"
 
 #endif
