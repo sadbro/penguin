@@ -44,7 +44,7 @@ int main(){
     earth.SetColor(vector(0.1, 0.3, 0.8));
 
     moon.SetSize(5);
-    moon.SetPos(vector(-70, 0, 0));
+    moon.SetPos(vector(-200, 0, 0));
 
     moon.UpdateVelocity(vector(0, 1, 0));
 
@@ -55,7 +55,7 @@ int main(){
 
     w.init();
 
-    w.Run(0.5, 0, 1);
+    w.Run(0.5, 0, 4);
 
 	return 0;
 }

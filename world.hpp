@@ -25,8 +25,8 @@ class World{
 
         World(int W = 640, int H = 480, int L = -1, std::string s = "Penguin", int m = 1){
 
-            Height = H;
             Width = W;
+            Height = H;
             Length = L;
 
             HL = WL = LL = -1e6;
@@ -49,6 +49,11 @@ class World{
 
             window = glfwCreateWindow(Width, Height, name.c_str(), nullptr, nullptr);
             glfwMakeContextCurrent(window);
+        }
+
+        static void fbs_callback(GLFWwindow* win, int w, int h){
+
+            glViewport(0, 0, w, h);
         }
 
         void Normalize(double* a, double* b, double* c){
@@ -124,7 +129,11 @@ class World{
 
         void Run(double step, double resistance = 0, double G = 1, int grid = 0){
 
+            glfwSetFramebufferSizeCallback(window, fbs_callback);
+
             while (!glfwWindowShouldClose(window)){
+
+                glfwGetWindowSize(window, &Width, &Height);
 
                 glClear(GL_COLOR_BUFFER_BIT);
 
@@ -134,6 +143,7 @@ class World{
 
                 glfwSwapBuffers(window);
                 glfwPollEvents();
+
             }
 
         }
